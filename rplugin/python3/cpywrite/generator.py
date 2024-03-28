@@ -416,8 +416,9 @@ _SOURCE_META = {
             ('.purs'): 'PureScript'
         },
          ('--', '-- ')],
-    ('.go', '.rs', '.fs', '.fsi', '.fsx', '.fsscript', '.scss'):
+    ('.dart', '.go', '.rs', '.fs', '.fsi', '.fsx', '.fsscript', '.scss'):
         [{
+            ('.dart'): 'Dart',
             ('.go'): 'Go',
             ('.rs'): 'Rust',
             ('.fs', '.fsi', '.fsx', '.fsscript'): 'F-sharp',
