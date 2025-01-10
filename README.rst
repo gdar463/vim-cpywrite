@@ -156,11 +156,10 @@ Requirements
   See if you're supported by entering ``vim --version | grep +python3`` at your
   terminal, or start ``vim`` and enter the ``:version`` command
 
-* Neovim with the `pynvim`_ and `typing-extensions`_ modules in your ``$PYTHONPATH``. Start ``nvim``
+* Neovim with the `pynvim`_ module in your ``$PYTHONPATH``. Start ``nvim``
   and enter ``:help provider-python`` for more information
 
 .. _pynvim: https://github.com/neovim/pynvim
-.. _typing-extensions: https://pypi.org/project/typing-extensions
 
 Installation
 ============
@@ -270,10 +269,10 @@ License
 
 Distributed under the terms of the MIT license.
 
-.. |gh-actions| image:: https://github.com/rdipardo/vim-cpywrite/workflows/(Neo)vim/badge.svg?branch=pre-release
+.. |gh-actions| image:: https://github.com/rdipardo/vim-cpywrite/actions/workflows/ci.yml/badge.svg?branch=pre-release
     :alt: Build Status
-    :target: https://github.com/rdipardo/vim-cpywrite/actions
-.. |current version| image:: https://img.shields.io/github/v/release/rdipardo/vim-cpywrite?logo=vim
+    :target: https://github.com/rdipardo/vim-cpywrite/actions/workflows/ci.yml
+.. |current version| image:: https://img.shields.io/github/v/release/rdipardo/vim-cpywrite?logo=vim&labelColor=009933&color=ffffe0
     :alt: Vim Scripts version
 .. |coverage| image:: https://codecov.io/gh/rdipardo/vim-cpywrite/graph/badge.svg
     :alt: Coverage stats
