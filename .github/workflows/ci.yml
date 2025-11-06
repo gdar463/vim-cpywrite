@@ -7,15 +7,19 @@ on:
   pull_request:
     branches:
       - master
+
+permissions:
+  contents: read
+
 jobs:
   coverage:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
     - name: Set up python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0
       with:
-        python-version: '3.12'
+        python-version: '3.13'
         cache: 'pip'
         cache-dependency-path: 'test/requirements.txt'
     - name: Install
@@ -29,7 +33,7 @@ jobs:
     - name: Run python tests
       run: coverage run -m pytest -v && coverage xml -o pytest.xml
     - name: Upload coverage report
-      uses: codecov/codecov-action@v5
+      uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 #v5.5.1
       with:
         files: ./pytest.xml
         disable_search: true
@@ -37,50 +41,31 @@ jobs:
 
   build:
     needs: coverage
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
-        vim-version: [7.4.1689, 8.2.4049, 9.0.0304]
-        python-version: ['3.5', '3.6', '3.7', '3.8', '3.9', '3.10', '3.11', '3.12', 'ubuntu']
+        vim-version: [v8.1.2269, v8.2.4049, v9.0.0304, master]
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
     env:
       LOG: python-${{ matrix.python-version }}-bench.log
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
     - name: Set up python ${{ matrix.python-version }}
-      if: ${{ matrix.python-version != 'ubuntu' && !startsWith(matrix.python-version, '3.5') }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0
       with:
         python-version: ${{ matrix.python-version }}
         cache: 'pip'
         cache-dependency-path: 'test/requirements.txt'
-    # https://github.com/actions/setup-python/issues/866#issuecomment-2109784318
-    - name: Set up python 3.5
-      if: ${{ startsWith(matrix.python-version, '3.5') }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
-      env:
-        PIP_TRUSTED_HOST: "pypi.python.org pypi.org files.pythonhosted.org"
 
     - name: Install latest pip
-      if: ${{ !startsWith(matrix.python-version, '3.5') }}
       run: |
         pip install --upgrade pip
 
-    - name: Install python modules (without cert validation)
-      if: ${{ startsWith(matrix.python-version, '3.5') }}
-      run: |
-        pip install --upgrade 'pip < 21.0'
-        pip install -r test/requirements.txt
-      env:
-        PIP_TRUSTED_HOST: "pypi.python.org pypi.org files.pythonhosted.org"
-
     - name: Install python modules
-      if: ${{ !startsWith(matrix.python-version, '3.5') }}
       run: pip install -r test/requirements.txt
 
     - name: Set up plugin test environment
-      uses: actions/checkout@v4
+      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       with:
         repository: blueyed/vader.vim
         ref: display-source-with-exceptions
@@ -88,32 +73,25 @@ jobs:
         fetch-depth: 1
 
     - name: Install neovim (current stable)
-      if: ${{ !(startsWith(matrix.python-version, '3.5') || startsWith(matrix.python-version, '3.6')) }}
-      uses: rhysd/action-setup-vim@v1
+      if: ${{ !(endsWith(matrix.python-version, '7') || endsWith(matrix.python-version, '8')) }}
+      uses: rhysd/action-setup-vim@89f3345bcde053529463583418779d83ee6dfb33 # v1.4.3
       id: neovim-stable
       with:
         neovim: true
         version: stable
 
-    - name: Install neovim 0.6.1
-      uses: rhysd/action-setup-vim@v1
-      id: neovim
+    - name: Install a neovim version supporting Python < 3.9
+      if: ${{ endsWith(matrix.python-version, '7') || endsWith(matrix.python-version, '8') }}
+      uses: rhysd/action-setup-vim@89f3345bcde053529463583418779d83ee6dfb33 # v1.4.3
+      id: neovim-oldstable
       with:
         neovim: true
-        version: 'v0.6.1'
-
-    - name: Test plugin on Ubuntu vim
-      if: ${{ matrix.python-version == 'ubuntu' }}
-      run: |
-        sudo apt-get -qq update
-        sudo apt-get -qqy install vim
-        vim --startuptime vim_bench.log -ENsu test/vimrc -c '+Vader! test/vader/**/*.vader' > /dev/null
-        .github/scripts/collect_start_times vim vim-${{ matrix.vim-version }}-$LOG
+        version: 'v0.11.0'
 
     - name: Test plugin on vim ${{ matrix.vim-version }}
-      if: ${{ (startsWith(matrix.python-version, '3.5') || startsWith(matrix.python-version, '3.6')) }}
+      if: ${{ startsWith(matrix.python-version, '3.8') }}
       run: |
-        git clone --branch v${{ matrix.vim-version }} https://github.com/vim/vim.git vim-src
+        git clone --branch ${{ matrix.vim-version }} https://github.com/vim/vim.git vim-src
         pushd vim-src
         git grep -l '# undef _POSIX_THREADS' | xargs -I% sed -i '/# undef _POSIX_THREADS/d' %
         CFLAGS=-D_POSIX_THREADS ./configure --prefix=/usr/local --with-features=normal \
@@ -124,21 +102,21 @@ jobs:
         .github/scripts/collect_start_times vim vim-${{ matrix.vim-version }}-$LOG
 
     - name: Test plugin on current stable neovim
-      if: ${{ !(startsWith(matrix.python-version, '3.5') || startsWith(matrix.python-version, '3.6')) }}
+      if: ${{ !(endsWith(matrix.python-version, '7') || endsWith(matrix.python-version, '8')) }}
       run: |
         "${{ steps.neovim-stable.outputs.executable }}" --startuptime nvim_bench.log -ENsu test/vimrc -c '+Vader! test/vader/**/*.vader' > /dev/null
 
     - name: Test plugin on neovim's legacy python providers
-      if: ${{ (startsWith(matrix.python-version, '3.5') || startsWith(matrix.python-version, '3.6')) }}
+      if: ${{ endsWith(matrix.python-version, '7') || endsWith(matrix.python-version, '8') }}
       run: |
-        "${{ steps.neovim.outputs.executable }}" --startuptime nvim_bench.log -ENsu test/vimrc -c '+Vader! test/vader/**/*.vader' > /dev/null
+        "${{ steps.neovim-oldstable.outputs.executable }}" --startuptime nvim_bench.log -ENsu test/vimrc -c '+Vader! test/vader/**/*.vader' > /dev/null
 
     - name: Check neovim startup times
       run: |
         .github/scripts/collect_start_times nvim neovim-$LOG
 
     - name: Save startup times
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
         name: plugin-load-stats@vim-${{ matrix.vim-version }}-py-${{ matrix.python-version }}
         path: '**/*python*.log'
@@ -148,7 +126,7 @@ jobs:
     needs: build
     steps:
       - name: Merge artifacts
-        uses: actions/upload-artifact/merge@v4
+        uses: actions/upload-artifact/merge@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: plugin-load-stats
           delete-merged: true
