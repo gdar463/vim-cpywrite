@@ -23,7 +23,7 @@ jobs:
         echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
         echo -e $(.github/scripts/changelog) > release_notes.txt
     - name: Create release
-      uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+      uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
       with:
         body_path: release_notes.txt
         name: ${{ env.RELEASE_VERSION }}

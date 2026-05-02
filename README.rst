@@ -42,7 +42,6 @@ Features
 
 :NOTE: Python 3.10 requires `neovim 0.6.0`_ or newer.
        All vim versions from 8.1 and up should be compatible.
-       `Bug reports <https://github.com/rdipardo/vim-cpywrite/issues>`_ are welcome.
 
 * Choose from more than 420 licenses (press ``<tab>`` after the ``:CPYwriteDefaultLicense``
   or ``:CPYwrite`` command for suggestions)
@@ -279,15 +278,6 @@ TODO
 
 .. |_| unicode:: U+2610 .. BALLOT BOX
 .. |X| unicode:: U+2611 .. BALLOT BOX WITH CHECK
-
-Improve this README
--------------------
-
-Consider opening a PR with an updated `installation guide <#installation>`_ if any of the
-following applies to you:
-
-* installation fails
-* installation succeeds with a plugin manager not mentioned here
 
 License
 =======

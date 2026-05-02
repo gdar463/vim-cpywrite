@@ -2,6 +2,7 @@ version: 2
 updates:
   - package-ecosystem: "pip"
     directory: "/test"
+    target-branch: "pre-release"
     groups:
       unit-tests:
         patterns:
@@ -11,6 +12,7 @@ updates:
       day: "sunday"
   - package-ecosystem: "github-actions"
     directory: "/"
+    target-branch: "pre-release"
     groups:
       gh-actions:
         patterns:

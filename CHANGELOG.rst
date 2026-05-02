@@ -6,6 +6,20 @@ CHANGELOG
    :depth: 1
    :backlinks: top
 
+0.8.3
+======
+**(2026-05-02)**
+
+Final Release
+-------------
+Consider using one of the many `alternative plugins <https://github.com/rdipardo/vim-cpywrite#projects-like-this-one>`_ available.
+
+Changed
+^^^^^^^
+- the `&commentstring <https://vimhelp.org/options.txt.html#%27commentstring%27>`_
+  option will be used in a best-effort attempt to format a license header when
+  the current file type has no predefined mapping
+
 0.8.2
 ======
 **(2024-09-01)**
