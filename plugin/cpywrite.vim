@@ -9,7 +9,7 @@
 if get(g:, 'loaded_cpywrite') | finish | endif
 let g:loaded_cpywrite = 1
 
-let g:cpywrite#version = '0.8.3-pre'
+let g:cpywrite#version = '0.8.3'
 
 if empty(get(g:, 'cpywrite#default_license', ''))
     let g:cpywrite#default_license = 'Apache-2.0'
