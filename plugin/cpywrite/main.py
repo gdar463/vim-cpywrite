@@ -71,10 +71,11 @@ def _write_header(writer, curr_buffer, filetype, filename):
 
             for idx, _ in enumerate(curr_buffer):
                 curr_line = curr_buffer[idx].lstrip()
-                is_script = curr_line.startswith("#!", 0) or \
-                        match(r"^#.+(coding).+$", curr_line)
+                has_shebangs = curr_line.startswith("#!", 0) or \
+                        match(r"^#.+(coding).+$", curr_line) or \
+                        curr_line.startswith("#pragma", 0)
                 # replace shebang lines and encoding declarations, if any
-                if not preserve_shebangs and is_script:
+                if not preserve_shebangs and has_shebangs:
                     to_trim += 1
                 # don't replace:
                 # - encoding or doctype declarations in [X|HT]ML,or
@@ -84,7 +85,7 @@ def _write_header(writer, curr_buffer, filetype, filename):
                     match(r"\?*\>$", curr_buffer[idx].rstrip()) or \
                     (filetype == 'dosbatch' and curr_line.startswith('@', 0)):
                     offset += 2
-                elif preserve_shebangs and is_script:
+                elif preserve_shebangs and has_shebangs:
                     offset = (offset + 1) if len(curr_line) > 0 else offset
                     # make an exception for Ruby because we don't insert a shebang,
                     # and never will: it upsets rubocop if the exec perm flag is not
