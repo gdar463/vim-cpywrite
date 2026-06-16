@@ -58,6 +58,7 @@ def _write_header(writer, curr_buffer, filetype, filename):
         exclude_file_name = _get_option_value('g:cpywrite#hide_filename')
         allow_anonymous = _get_option_value('g:cpywrite#no_anonymous')
         preserve_shebangs = _get_option_value('g:cpywrite#preserve_shebangs')
+        extra_new_lines = _get_option_value('g:cpywrite#extra_new_lines')
         include_javadoc = _get_option_value('g:cpywrite#java#add_class_doc')
         header = writer.fetch_license_header(use_text_as_header,
                                              machine_readable,
@@ -129,7 +130,8 @@ def _write_header(writer, curr_buffer, filetype, filename):
             if to_trim > 0:
                 del curr_buffer[0:to_trim]
 
-            curr_buffer[offset:offset] = header.splitlines()[to_skip:]
+            offset = max(0, offset - extra_new_lines)
+            curr_buffer[offset:offset] = ("\n" * extra_new_lines if offset != 0 else "") + header.splitlines()[to_skip:] + "\n" * extra_new_lines
 
     except (ValueError, vim.error) as exc:
         print(str(exc))

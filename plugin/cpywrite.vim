@@ -35,6 +35,10 @@ if !exists('g:cpywrite#preserve_shebangs')
     let g:cpywrite#preserve_shebangs = 1
 endif
 
+if !exists('g:cpywrite#extra_new_lines')
+    let g:cpywrite#extra_new_lines = 0
+endif
+
 if !exists(':CPYwrite')
     com! -nargs=* -complete=customlist,cpywrite#licenses#GetLicenseList
       \ CPYwrite :call cpywrite#PrependHeader(<f-args>)
