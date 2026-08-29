@@ -130,8 +130,8 @@ def _write_header(writer, curr_buffer, filetype, filename):
             if to_trim > 0:
                 del curr_buffer[0:to_trim]
 
-            offset = max(0, offset - extra_new_lines)
-            curr_buffer[offset:offset] = ([""] * extra_new_lines if offset != 0 else []) + header.splitlines()[to_skip:] + [""] * extra_new_lines
+            offset = max(0, offset - extra_new_lines + to_skip)
+            curr_buffer[offset:offset] = ([""] * extra_new_lines if offset != 0 else []) + header.splitlines() + [""] * extra_new_lines
 
     except (ValueError, vim.error) as exc:
         print(str(exc))
