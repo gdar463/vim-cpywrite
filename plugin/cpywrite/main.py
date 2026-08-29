@@ -142,7 +142,7 @@ def _write_header(writer, curr_buffer, filetype, filename):
                     if new_lines_offset > 0:
                         has_newline = curr_buffer[new_lines_offset] == "" or curr_buffer[new_lines_offset] == "\n"
 
-            new_lines_offset = offset + 1
+            new_lines_offset = offset
             after_extra_new_lines = extra_new_lines
             if new_lines_offset < len(curr_buffer):
                 has_newline = curr_buffer[new_lines_offset] == "" or curr_buffer[new_lines_offset] == "\n"
