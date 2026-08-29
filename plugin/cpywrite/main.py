@@ -133,8 +133,8 @@ def _write_header(writer, curr_buffer, filetype, filename):
             offset = max(0, offset - extra_new_lines + to_skip)
 
             new_lines_offset = offset - 1
+            before_extra_new_lines = extra_new_lines
             if new_lines_offset > 0:
-                before_extra_new_lines = extra_new_lines
                 has_newline = curr_buffer[new_lines_offset] == "" or curr_buffer[new_lines_offset] == "\n"
                 while before_extra_new_lines > 0 and has_newline and new_lines_offset > 0:
                     before_extra_new_lines -= 1
@@ -143,8 +143,8 @@ def _write_header(writer, curr_buffer, filetype, filename):
                         has_newline = curr_buffer[new_lines_offset] == "" or curr_buffer[new_lines_offset] == "\n"
 
             new_lines_offset = offset + 1
+            after_extra_new_lines = extra_new_lines
             if new_lines_offset < len(curr_buffer):
-                after_extra_new_lines = extra_new_lines
                 has_newline = curr_buffer[new_lines_offset] == "" or curr_buffer[new_lines_offset] == "\n"
                 while after_extra_new_lines > 0 and has_newline and new_lines_offset < len(curr_buffer):
                     after_extra_new_lines -= 1
