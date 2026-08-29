@@ -132,23 +132,25 @@ def _write_header(writer, curr_buffer, filetype, filename):
 
             offset = max(0, offset - extra_new_lines + to_skip)
 
-            new_lines_offset = offset
-            before_extra_new_lines = extra_new_lines
-            has_newline = curr_buffer[new_lines_offset] == "" or curr_buffer[new_lines_offset] == "\n"
-            while before_extra_new_lines > 0 and has_newline and new_lines_offset > 0:
-                before_extra_new_lines -= 1
-                new_lines_offset -= 1
-                if new_lines_offset > 0:
-                    has_newline = curr_buffer[new_lines_offset] == "" or curr_buffer[new_lines_offset] == "\n"
+            new_lines_offset = offset - 1
+            if new_lines_offset > 0:
+                before_extra_new_lines = extra_new_lines
+                has_newline = curr_buffer[new_lines_offset] == "" or curr_buffer[new_lines_offset] == "\n"
+                while before_extra_new_lines > 0 and has_newline and new_lines_offset > 0:
+                    before_extra_new_lines -= 1
+                    new_lines_offset -= 1
+                    if new_lines_offset > 0:
+                        has_newline = curr_buffer[new_lines_offset] == "" or curr_buffer[new_lines_offset] == "\n"
 
-            new_lines_offset = offset
-            after_extra_new_lines = extra_new_lines
-            has_newline = curr_buffer[new_lines_offset] == "" or curr_buffer[new_lines_offset] == "\n"
-            while before_extra_new_lines > 0 and has_newline and new_lines_offset < len(curr_buffer):
-                after_extra_new_lines -= 1
-                new_lines_offset += 1
-                if new_lines_offset < len(curr_buffer):
-                    has_newline = curr_buffer[new_lines_offset] == "" or curr_buffer[new_lines_offset] == "\n"
+            new_lines_offset = offset + 1
+            if new_lines_offset < len(curr_buffer):
+                after_extra_new_lines = extra_new_lines
+                has_newline = curr_buffer[new_lines_offset] == "" or curr_buffer[new_lines_offset] == "\n"
+                while after_extra_new_lines > 0 and has_newline and new_lines_offset < len(curr_buffer):
+                    after_extra_new_lines -= 1
+                    new_lines_offset += 1
+                    if new_lines_offset < len(curr_buffer):
+                        has_newline = curr_buffer[new_lines_offset] == "" or curr_buffer[new_lines_offset] == "\n"
             curr_buffer[offset:offset] = ([""] * before_extra_new_lines if offset != 0 else []) + header.splitlines() + [""] * after_extra_new_lines
 
     except (ValueError, vim.error) as exc:
