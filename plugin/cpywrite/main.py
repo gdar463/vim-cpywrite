@@ -73,8 +73,9 @@ def _write_header(writer, curr_buffer, filetype, filename):
             for idx, _ in enumerate(curr_buffer):
                 curr_line = curr_buffer[idx].lstrip()
                 has_shebangs = curr_line.startswith("#!", 0) or \
-                        match(r"^#.+(coding).+$", curr_line) or \
-                        curr_line.startswith("#pragma", 0)
+                        match(r"^#.+(coding).+$", curr_line)
+                if filetype == "cpp" or filetype == "c":
+                    has_shebangs = has_shebangs or curr_line.startswith("#", 0)
                 # replace shebang lines and encoding declarations, if any
                 if not preserve_shebangs and has_shebangs:
                     to_trim += 1
